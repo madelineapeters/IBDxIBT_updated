@@ -1,5 +1,4 @@
 #load required packages
-library(vegan)
 library(tidyr)
 library(dplyr)
 library(data.table)
@@ -19,7 +18,11 @@ for (r in 1:no_runs) {
   setwd(start_wd)
   
   #create dataframes to hold stats outputs
-  Fst_tab<-matrix(nrow=11, ncol=no_neutral)
+  Fst_tab<-matrix(nrow=11, ncol=no_runs)
+	for (g in 1:no_runs){
+		names(Fst_tab)[g]<-paste("run",g, sep="_")
+		}
+	
   #start loop over generations
   for (i in c(1, seq(from = 50, to = 500, by = 50))) {
     #read in generation dataframe
@@ -80,88 +83,31 @@ for (r in 1:no_runs) {
           HS<-sum(Hm, Hp)/2
           
           #Calculate the heterozygosity based on the total population allele frequencies. This is HT.
-          HT<-(2*(Pm+Pp)*(Qm+Qp)/(4))
+          HT<-(2*(Ptotal)*Qtotal)
           
           #Finally, calculate FST=(HT-HS)/HT.
           Fst<-(HT-HS)/HT
           
           #Store Fst value
           pair_matrix[m,p]<-Fst
-      }
-    }
-  
-    #start loop over neutral loci to run and record Mantel test  
-    for (n in 1:no_neutral){
-      
-      #set up matrix to store per-locus genetic distance 
-      neut_dist_matrix<-matrix(nrow=pop_size, ncol=pop_size)
-      
-      #fill in genetic distance matrix
-      for (m in 1:pop_size) {
-        for (p in 1:pop_size) {
-          neut_dist_matrix[m,p]<-abs(offspring_map[m,(1+(n-1))]-offspring_map[p,(1+(n-1))])
-        }
-      }
-      
-      #run Mantel test
-      if (sum(neut_dist_matrix) == 0) {
-        if (i == 1) {
-          mantel.r[i,n]<-paste("NA")
-          mantel.sig[i,n]<-paste("NA")
-        } else {
-          mantel.r[((i/50)+1),n]<-paste("NA")
-          mantel.sig[((i/50)+1),n]<-paste("NA")
-        }
-      } else {
-        neut_mantel<-mantel(totaldist_matrix, neut_dist_matrix, permutations=1000)
-        
-        #store output from Mantel test
-        if (i == 1) {
-          mantel.r[i,n]<-paste((capture.output(neut_mantel))[7])
-          mantel.sig[i,n]<-paste((capture.output(neut_mantel))[8])
-        } else {
-          mantel.r[((i/50)+1),n]<-paste((capture.output(neut_mantel))[7])
-          mantel.sig[((i/50)+1),n]<-paste((capture.output(neut_mantel))[8])
-        } #end store output if/else
-      } #end run Mantel if/else
-      
-    } #end loop over n
-
+      } #next p
+    } #next m
+		
+		#find average pairwise Fst for across whole matix
+		Fst_avg<-mean(pair_wise)
+		
+		#Store average pairwise Fst in data frame
+		Fst_tab[i,r]<-Fst_avg
+		
   } #end for loop over generations
-  
-  
-  #Remove text from Mantel output dataframes
-  mantel.r <- as.data.frame(sapply(mantel.r,gsub,pattern="Mantel statistic r: ", replacement=""))
-  mantel.sig <- as.data.frame(sapply(mantel.sig,gsub,pattern="Significance: ", replacement=""))
-  
-  write.csv(mantel.sig, paste("mantel.sig.", r, ".csv", sep=""))
-  write.csv(mantel.r, paste("mantel.r.", r, ".csv", sep=""))
-  
+	
 } #end for loop over runs
-
+	
+#Calculate average generational Fst values across runs
+Fst_tab<-as.data.frame(Fst_tab)
+transmute(Fst_tab, run_avg = mean(c(1:no_runs)))
+	
+#Write .csv file for Fst_tab	
+ write.csv(Fst_tab, paste("Fst.", r, ".csv", sep=""))
+  
 } #end for loop over parameter sets
-
-#reset the working directory
-start_wd<-(paste("C:/Users/Madeline/Desktop/Weis lab/EEB498/", paste("para_set", para_num, sep="_"), sep=""))
-setwd(start_wd)
-
-#ensure all dataframes are loaded into the environment
-for (df in list.files(pattern = 'mantel.sig.*')){
-  assign(df, read.csv(df, header = TRUE))
-} 
-for (df in list.files(pattern = 'mantel.r.*')){
-  assign(df, read.csv(df, header = TRUE))
-}
-
-
-#put dataframes into lists
-dflist.sig<-lapply(ls(pattern = "mantel.sig.*"), get)
-dflist.r<-lapply(ls(pattern = "mantel.r.*"), get)
-
-#average over dataframes
-mantel.sig.avg<-rbindlist(dflist.sig)[,lapply(.SD,mean), list()]
-mantel.r.avg<-rbindlist(dflist.r)[,lapply(.SD,mean), list()]
-
-#save averaged dataframes
-write.csv(mantel.sig.avg, paste("mantel.sig.avg.csv"), row.names=F)
-write.csv(mantel.r.avg, paste("mantel.r.avg.csv"), row.names=F)

@@ -89,7 +89,7 @@ for (r in 1:no_runs) {
           Fst<-(HT-HS)/HT
           
           #Store Fst value
-          pair_matrix[m,p]<-Fst
+          pair_wise[m,p]<-Fst
       } #next p
     } #next m
 		
@@ -106,6 +106,10 @@ for (r in 1:no_runs) {
 #Calculate average generational Fst values across runs
 Fst_tab<-as.data.frame(Fst_tab)
 transmute(Fst_tab, run_avg = mean(c(1:no_runs)))
+
+#Reset working directory
+start_wd<-(paste("C:/Users/Madeline/Desktop/Weis lab/EEB498", paste("para_set", e, sep="_"), sep="/"))
+setwd(start_wd)
 	
 #Write .csv file for Fst_tab	
  write.csv(Fst_tab, paste("Fst.", r, ".csv", sep=""))

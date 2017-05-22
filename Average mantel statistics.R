@@ -3,7 +3,7 @@ library(tidyr)
 library(dplyr)
 library(data.table)
 
-for (e in c(52,53)) {
+for (e in c(59)) {
   #set parameters
   no_runs<-3
   FLmean<-100
@@ -51,8 +51,7 @@ for (e in c(52,53)) {
   total.r<-rowMeans(total.r, na.rm = TRUE, dims = 1)
 
   #reset the working directory
-  start_wd<-(paste("C:/Users/Madeline/Desktop/Weis lab/EEB498/", paste("para_set", e, sep="_"), sep=""))
-  setwd(start_wd)
+  setwd('../')
   
   #save averaged dataframes
   write.csv(total.sig, paste("mantel.sig.avg.csv"), row.names=F)

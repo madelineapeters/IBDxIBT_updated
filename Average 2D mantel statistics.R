@@ -3,7 +3,7 @@ library(tidyr)
 library(dplyr)
 library(data.table)
 
-for (e in seq(from=54, to=63, by=1)) {
+for (e in 64) {
   #set parameters
   no_runs<-10
   FLmean<-100
@@ -16,18 +16,19 @@ for (e in seq(from=54, to=63, by=1)) {
     setwd(start_wd)
     
     #ensure all dataframes are loaded into the environment
-    df.sig<-paste("mantel.sig.", r, sep="")
-    assign(df.sig, read.csv(paste("mantel.sig.", r, ".csv", sep=""), header = TRUE))
-    df.r<-paste("mantel.r.", r, sep="")
-    assign(df.r, read.csv(paste("mantel.r.", r, ".csv", sep=""), header = TRUE))
-  } #end loop over runs 
+    df.sig<-paste("2D.mantel.sig.", r, sep="")
+    assign(df.sig, read.csv(paste(df.sig, ".csv", sep=""), header = TRUE))
+    df.r<-paste("2D.mantel.r.", r, sep="")
+    assign(df.r, read.csv(paste(df.r, ".csv", sep=""), header = TRUE))
+    
+  } #end loop over runs
   
   rm(df.sig)
   rm(df.r)
   
   #put dataframes into lists
-  dflist.sig<-lapply(ls(pattern = "mantel.sig.*"), get)
-  dflist.r<-lapply(ls(pattern = "mantel.r.*"), get)
+  dflist.sig<-lapply(ls(pattern = "2D.mantel.sig.*"), get)
+  dflist.r<-lapply(ls(pattern = "2D.mantel.r.*"), get)
   
   #bind data frames and rename columns
   total.sig<-bind_cols(dflist.sig)
@@ -58,8 +59,8 @@ for (e in seq(from=54, to=63, by=1)) {
   setwd('../')
   
   #save averaged dataframes
-  write.csv(total.sig, paste("mantel.sig.avg.csv"), row.names=F)
-  write.csv(total.r, paste("mantel.r.avg.csv"), row.names=F)
+  write.csv(total.sig, paste("2D.mantel.sig.avg.csv"), row.names=F)
+  write.csv(total.r, paste("2D.mantel.r.avg.csv"), row.names=F)
   
   #clear environment before next parameter set
   rm(list=ls())

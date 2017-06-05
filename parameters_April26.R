@@ -21,7 +21,7 @@ fl_noise<-if (para$fl_noise[x]=="none") {0} else if (para$fl_noise[x]=="low") {1
 
 FT_loci<-para$FT_loci[x]
 
-FT_alleles<-if (fl_var=="high") {c(-2, -1, 0, 1, 2)} else if (fl_var=="low") {c(-1, -0.5, 0, 0.5, 1)}	#quantitative effect of alleles at each of FT_loci (assumes same allele # and effect size at each locus)
+FT_alleles<-if (fl_var=="high") {c(-1, 1)} else if (fl_var=="low") {c(-0.5, 0.5)}	#quantitative effect of alleles at each of FT_loci (assumes same allele # and effect size at each locus)
 
 fl_seq<-c(2, 3, 5, 8, 11, 13, 15, 17, 15, 13, 11, 8, 5, 3, 2)	# of flowers per plant for each day of flowering (here, 131 per plant, distributed over 15 days)
 

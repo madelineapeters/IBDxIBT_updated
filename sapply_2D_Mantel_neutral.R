@@ -1,13 +1,12 @@
 #load required packages
 library(tidyr)
 library(dplyr)
-library(data.table)
 library(doParallel)
 
 cl<- makeCluster(2)
 registerDoParallel(cl)
 
-foreach (e = starting.set2:final.set2) %dopar% {
+foreach (e = starting.set1:final.set1) %dopar% {
 
 #start loop over runs
 for (r in 1:no_runs) {
@@ -53,45 +52,14 @@ for (r in 1:no_runs) {
     
     ####################################################################################
     #set up geographic distance matrix
-    distance1<-matrix(nrow=pop_size, ncol=pop_size)
-    distance2<-matrix(nrow=pop_size, ncol=pop_size)
+    distance_matrix<-matrix(nrow=pop_size, ncol=pop_size)
     
     #fill in geographic distance matrix
     for (m in 1:pop_size) {
       for (p in 1:pop_size) {
-        distance1[m,p]<-sqrt((offspring$X_pos[m]-offspring$X_pos[p])^2 + (offspring$Y_pos[m] - offspring$Y_pos[p])^2)
-        distance2[m,p]<-sqrt(((sqrt(pop_size)+1)-abs(offspring$X_pos[m]-offspring$X_pos[p]))^2 + ((sqrt(pop_size)+1)-abs(offspring$Y_pos[m]-offspring$Y_pos[p]))^2)
-      }
-    }
-    distance1<-distance1/sum(distance1)
-    distance2<-distance2/sum(distance2)
-    distance_matrix<-distance1+distance2
-    distance_matrix<-distance_matrix/sum(distance_matrix)
-
-    #determine average pairwise geographic distance
-    eucavg<-mean(distance_matrix)
-    
-    #set up temporal distance matrix
-    FLdist_matrix<-matrix(nrow=pop_size, ncol=pop_size)
-    
-    #fill in temporal distance matrix
-    for (m in 1:pop_size) {
-      for (p in 1:pop_size) {
-        FLdist_matrix[m,p]<-abs((offspring$FLday[m]-offspring$FLday[p])/FLmean)
+        
+        distance_matrix[m,p]<-sqrt((offspring$X_pos[m]-offspring$X_pos[p])^2 + (offspring$Y_pos[m] - offspring$Y_pos[p])^2)	
       }}
-    
-    #determine average pairwise temporal distance
-    FLavg<-mean(FLdist_matrix)
-    
-    #set up total distance matrix
-    totaldist_matrix<-matrix(nrow=pop_size, ncol=pop_size)
-    
-    #fill in total distance matrix
-    for (m in 1:pop_size) {
-      for (p in 1:pop_size){
-        totaldist_matrix[m,p]<-sqrt(distance_matrix[m,p]^2 + (FLdist_matrix[m,p]*(eucavg/FLavg))^2)
-      }
-    }
   
     #start loop over neutral loci to run and record Mantel test  
     for (n in 1:no_neutral){
@@ -117,7 +85,7 @@ for (r in 1:no_runs) {
         }
       } else {
         library(vegan)
-        neut_mantel<-mantel(totaldist_matrix, neut_dist_matrix, permutations=1000)
+        neut_mantel<-mantel(distance_matrix, neut_dist_matrix, permutations=1000)
         
         #store output from Mantel test
         if (i == 1) {
@@ -138,9 +106,10 @@ for (r in 1:no_runs) {
   mantel.r <- as.data.frame(sapply(mantel.r,gsub,pattern="Mantel statistic r: ", replacement=""))
   mantel.sig <- as.data.frame(sapply(mantel.sig,gsub,pattern="Significance: ", replacement=""))
   
-  write.csv(mantel.sig, paste("mantel.sig.", r, ".csv", sep=""))
-  write.csv(mantel.r, paste("mantel.r.", r, ".csv", sep=""))
+  write.csv(mantel.sig, paste("2D.mantel.sig.", r, ".csv", sep=""))
+  write.csv(mantel.r, paste("2D.mantel.r.", r, ".csv", sep=""))
   
 } #end for loop over runs
 
 } #end for loop over parameter sets
+

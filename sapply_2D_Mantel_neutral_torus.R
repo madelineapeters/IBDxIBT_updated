@@ -1,24 +1,19 @@
 #load required packages
-library(vegan)
 library(tidyr)
 library(dplyr)
+library(data.table)
 library(doParallel)
 
-cl<- makeCluster(3)
+cl<- makeCluster(2)
 registerDoParallel(cl)
 
-foreach (e = seq(from = 54, to = 65, by = 1)) %dopar% {
-#set parameters
-no_runs<-10
-FLmean<-100
-no_neutral<-10
-pop_size<-400
+foreach (e = starting.set2:ending.set2) %dopar% {
 
 #start loop over runs
 for (r in 1:no_runs) {
 
   #set working directory
-  start_wd<-(paste("C:/Users/Madeline/Desktop/Weis lab/EEB498", paste("para_set", e, sep="_"), paste("model_run_", r, sep=""), sep="/"))
+  start_wd<-(paste(base_wd, sub_wd, paste("para_set", e, sep="_"), paste("model_run_", r, sep=""), sep="/"))
   setwd(start_wd)
   
   #create dataframes to hold stats outputs

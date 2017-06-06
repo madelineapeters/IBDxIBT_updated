@@ -1,19 +1,18 @@
 #load required packages
-library(tidyr)
-library(dplyr)
-library(data.table)
-library(doParallel)
+library(ape)
 
-cl<- makeCluster(2)
-registerDoParallel(cl)
-
-foreach (e = starting.set2:final.set2) %dopar% {
+for (e in seq(from = 54, to = 64, by = 1)) {
+#set parameters
+no_runs<-10
+FLmean<-100
+no_neutral<-10
+pop_size<-400
 
 #start loop over runs
 for (r in 1:no_runs) {
 
   #set working directory
-  start_wd<-(paste(base_wd, sub_wd, paste("para_set", e, sep="_"), paste("model_run_", r, sep=""), sep="/"))
+  start_wd<-(paste("G:/", paste("para_set", e, sep="_"), paste("model_run_", r, sep=""), sep="/"))
   setwd(start_wd)
   
   #create dataframes to hold stats outputs
@@ -52,7 +51,7 @@ for (r in 1:no_runs) {
     offspring_map<-subset.data.frame(offspring_map, select= (2*no_neutral+1):(2*no_neutral+no_neutral))
     
     ####################################################################################
-    #set up geographic distance matrix
+    #set up geographic distance matrices
     distance1<-matrix(nrow=pop_size, ncol=pop_size)
     distance2<-matrix(nrow=pop_size, ncol=pop_size)
     
@@ -66,32 +65,9 @@ for (r in 1:no_runs) {
     distance1<-distance1/sum(distance1)
     distance2<-distance2/sum(distance2)
     distance_matrix<-distance1+distance2
-    distance_matrix<-distance_matrix/sum(distance_matrix)
-
-    #determine average pairwise geographic distance
-    eucavg<-mean(distance_matrix)
     
-    #set up temporal distance matrix
-    FLdist_matrix<-matrix(nrow=pop_size, ncol=pop_size)
-    
-    #fill in temporal distance matrix
-    for (m in 1:pop_size) {
-      for (p in 1:pop_size) {
-        FLdist_matrix[m,p]<-abs((offspring$FLday[m]-offspring$FLday[p])/FLmean)
-      }}
-    
-    #determine average pairwise temporal distance
-    FLavg<-mean(FLdist_matrix)
-    
-    #set up total distance matrix
-    totaldist_matrix<-matrix(nrow=pop_size, ncol=pop_size)
-    
-    #fill in total distance matrix
-    for (m in 1:pop_size) {
-      for (p in 1:pop_size){
-        totaldist_matrix[m,p]<-sqrt(distance_matrix[m,p]^2 + (FLdist_matrix[m,p]*(eucavg/FLavg))^2)
-      }
-    }
+    #standardise the geographic distance matrix
+    distance_matrix<-(distance_matrix-mean(distance_matrix))/sum(distance_matrix)
   
     #start loop over neutral loci to run and record Mantel test  
     for (n in 1:no_neutral){
@@ -106,6 +82,7 @@ for (r in 1:no_runs) {
         }
       }
       
+      
       #run Mantel test
       if (sum(neut_dist_matrix) == 0) {
         if (i == 1) {
@@ -116,16 +93,20 @@ for (r in 1:no_runs) {
           mantel.sig[((i/50)+1),n]<-paste("NA")
         }
       } else {
-        library(vegan)
-        neut_mantel<-mantel(totaldist_matrix, neut_dist_matrix, permutations=1000)
+        
+        #standardise the neutral distance matrix
+        neut_dist_matrix<-(neut_dist_matrix-mean(neut_dist_matrix))/sd(neut_dist_matrix)
+        
+        library(ape)
+        neut_mantel<-mantel.test(distance_matrix, neut_dist_matrix, nperm=1000)
         
         #store output from Mantel test
         if (i == 1) {
-          mantel.r[i,n]<-paste((capture.output(neut_mantel))[7])
-          mantel.sig[i,n]<-paste((capture.output(neut_mantel))[8])
+          mantel.r[i,n]<-paste((capture.output(neut_mantel))[2])
+          mantel.sig[i,n]<-paste((capture.output(neut_mantel))[5])
         } else {
-          mantel.r[((i/50)+1),n]<-paste((capture.output(neut_mantel))[7])
-          mantel.sig[((i/50)+1),n]<-paste((capture.output(neut_mantel))[8])
+          mantel.r[((i/50)+1),n]<-paste((capture.output(neut_mantel))[2])
+          mantel.sig[((i/50)+1),n]<-paste((capture.output(neut_mantel))[5])
         } #end store output if/else
       } #end run Mantel if/else
       
@@ -133,14 +114,10 @@ for (r in 1:no_runs) {
 
   } #end for loop over generations
   
-  
-  #Remove text from Mantel output dataframes
-  mantel.r <- as.data.frame(sapply(mantel.r,gsub,pattern="Mantel statistic r: ", replacement=""))
-  mantel.sig <- as.data.frame(sapply(mantel.sig,gsub,pattern="Significance: ", replacement=""))
-  
-  write.csv(mantel.sig, paste("mantel.sig.", r, ".csv", sep=""))
-  write.csv(mantel.r, paste("mantel.r.", r, ".csv", sep=""))
+  write.csv(mantel.sig, paste("2D.mantel.sig.", r, ".csv", sep=""))
+  write.csv(mantel.r, paste("2D.mantel.r.", r, ".csv", sep=""))
   
 } #end for loop over runs
 
 } #end for loop over parameter sets
+

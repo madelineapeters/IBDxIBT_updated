@@ -1,31 +1,30 @@
 #load required packages
 library(tidyr)
 library(dplyr)
+library(data.table)
+library(doParallel)
 
-for (e in 42:63) {
-  #set parameters
-  no_runs<-10
-  FLmean<-100
-  no_neutral<-10
-  pop_size<-400
-  
+cl<- makeCluster(3)
+registerDoParallel(cl)
+
+foreach (e = starting.set1:ending.set1) %dopar% {
+
   for (r in 1:no_runs) {
     #Set the working directory
-    start_wd<-(paste("G:/final sets", paste("para_set", e, sep="_"), paste("model_run_", r, sep=""), sep="/"))
+    start_wd<-(paste(base_wd, sub_wd, paste("para_set", e, sep="_"), paste("model_run_", r, sep=""), sep="/"))
     setwd(start_wd)
     
     #ensure all dataframes are loaded into the environment
     df.FL.sig<-paste("2D.mantel.FL.sig.", r, ".csv", sep="")
-    df.FL.sig<-as.data.frame(assign(df.FL.sig, read.csv(df.FL.sig, header = TRUE)))
+    assign(df.FL.sig, read.csv(df.FL.sig, header = TRUE))
     df.FL.r<-paste("2D.mantel.FL.r.", r, ".csv", sep="")
-    df.FL.r<-as.data.frame(assign(df.FL.r, read.csv(df.FL.r, header = TRUE)))
+    assign(df.FL.r, read.csv(df.FL.r, header = TRUE))
     
   } #end loop over runs
   
   #put dataframes into lists
   dflist.sig<-lapply(ls(pattern = "2D.mantel.FL.sig.*"), get)
   dflist.r<-lapply(ls(pattern = "2D.mantel.FL.r.*"), get)
-  
   
   #bind data frames and rename columns
   total.sig<-bind_cols(dflist.sig)
@@ -47,6 +46,7 @@ for (e in 42:63) {
       total.r<-select(total.r, -(r))
     }
   }
+
   
   #sum over rows to get average statistics
   total.sig<-rowMeans(total.sig, na.rm = TRUE, dims = 1)
@@ -60,6 +60,6 @@ for (e in 42:63) {
   write.csv(total.r, paste("FL.mantel.r.avg.csv"), row.names=F)
   
   #clear environment before next parameter set
-  rm(list=ls())
+  rm(dflist.r, dflist.sig)
   
 } #end loop over parameter sets

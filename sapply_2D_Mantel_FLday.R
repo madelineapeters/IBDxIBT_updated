@@ -2,13 +2,12 @@
 library(vegan)
 library(tidyr)
 library(dplyr)
-library(data.table)
 library(doParallel)
 
-cl<-makeCluster(2)
+cl<- makeCluster(2)
 registerDoParallel(cl)
 
-foreach (e = starting.set2:final.set2) %dopar% {
+foreach (e = starting.set1:final.set1) %dopar% {
 
 #start loop over runs
 for (r in 1:no_runs) {
@@ -27,28 +26,21 @@ for (r in 1:no_runs) {
     offspring_map <- read.csv(paste(getwd(), paste("offspring_map", i, sep="_"), sep="/"))
     
     ####################################################################################
-    
-    #set up geographic distance matrices
-    distance1<-matrix(nrow=pop_size, ncol=pop_size)
-    distance2<-matrix(nrow=pop_size, ncol=pop_size)
+    #set up geographic distance matrix
+    distance_matrix<-matrix(nrow=pop_size, ncol=pop_size)
     
     #fill in geographic distance matrix
     for (m in 1:pop_size) {
       for (p in 1:pop_size) {
-        distance1[m,p]<-sqrt((offspring_map$X_pos[m]-offspring_map$X_pos[p])^2 + (offspring_map$Y_pos[m] - offspring_map$Y_pos[p])^2)
-        distance2[m,p]<-sqrt(((sqrt(pop_size)+1)-abs(offspring_map$X_pos[m]-offspring_map$X_pos[p]))^2 + ((sqrt(pop_size)+1)-abs(offspring_map$Y_pos[m]-offspring_map$Y_pos[p]))^2)
-      }
-    }
-    distance1<-distance1/sum(distance1)
-    distance2<-distance2/sum(distance2)
-    distance_matrix<-distance1+distance2
-    distance_matrix<-distance_matrix/sum(distance_matrix)
+        distance_matrix[m,p]<-sqrt((offspring_map$X_pos[m]-offspring_map$X_pos[p])^2 + (offspring_map$Y_pos[m] - offspring_map$Y_pos[p])^2)	
+      }}
   
     #set up and fill in FL day matrix  
     FL_matrix<-matrix(nrow=pop_size, ncol=pop_size)
     
     for (m in 1:pop_size) {
       for (p in 1:pop_size) {
+        
         FL_matrix[m,p]<-abs((offspring_map$FLday[m]-offspring_map$FLday[p])/FLmean)
       }}
       
@@ -69,8 +61,8 @@ for (r in 1:no_runs) {
   
   
   #Remove text from Mantel output dataframes
-  mantel.FL.r <- as.data.frame(sapply(mantel.FL.r,gsub,pattern="Mantel statistic r: ", replacement=""))
-  mantel.FL.sig <- as.data.frame(sapply(mantel.FL.sig,gsub,pattern="Significance: ", replacement=""))
+  mantel.r <- as.data.frame(sapply(mantel.FL.r,gsub,pattern="Mantel statistic r: ", replacement=""))
+  mantel.sig <- as.data.frame(sapply(mantel.FL.sig,gsub,pattern="Significance: ", replacement=""))
   
   write.csv(mantel.FL.sig, paste("2D.mantel.FL.sig.", r, ".csv", sep=""))
   write.csv(mantel.FL.r, paste("2D.mantel.FL.r.", r, ".csv", sep=""))

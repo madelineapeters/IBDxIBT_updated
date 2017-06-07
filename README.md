@@ -2,7 +2,7 @@
 
 ### In collaboration with Dr. Arthur Weis, University of Toronto
 
-![](https://github.com/madelineapeters/stunning-figures/blob/master/flowering_day_gif.gif)
+![](https://github.com/madelineapeters/stunning-figures/blob/master/cube.png)
 
 _Distance for mating between individuals in a population can be considered both geographically and temporally if individuals are variable in their reproductive schedules._
 

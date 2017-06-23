@@ -25,6 +25,8 @@ for (e in c(54, 56, 58)) {
   #select trait
   trait<-"neutral"
   
+  if (trait == "neutral") {denom<-no_neutral} else if (trait == "FLloci") {denom<-no_FL}
+  
   #set working directory
   start_wd<-(paste(base_wd, sub_wd, paste("para_set", e, sep="_"), paste("model_run_", r, sep=""), sep="/"))
   setwd(start_wd)
@@ -121,7 +123,9 @@ for (e in c(54, 56, 58)) {
       } #end m loop
       
       #run correlogram function
-      if (sum(trait_matrix) > 0) {
+      if (sum(trait_matrix) == 0) {
+        denom<-denom-1
+        } else if (sum(trait_matrix) > 0) {
         
         #run correlog
         trait.mantel<-mantel.correlog(D.eco=trait_matrix, D.geo=distance_matrix, nperm=1000)
@@ -139,10 +143,10 @@ for (e in c(54, 56, 58)) {
           trait.string<-as.numeric(substr(trait.string, 33, 44))
           if (e == 54 || 56 || 58){
             corr.df[(s-8),((e/2)-25)]<-corr.df[(s-8),((e/2)-25)]+trait.string
-            if (n == no_neutral) {corr.df[(s-8),(((e)/2)-25)]<-corr.df[(s-8),(((e)/2)-25)]/no_neutral}
+            if (n == no_neutral) {corr.df[(s-8),(((e)/2)-25)]<-corr.df[(s-8),(((e)/2)-25)]/denom}
           } else {
             corr.df[(s-8),(((e-1)/2)-25)]<-corr.df[(s-8),(((e-1)/2)-25)]+trait.string
-            if (n == no_neutral) {corr.df[(s-8),(((e-1)/2)-25)]<-corr.df[(s-8),(((e-1)/2)-25)]/no_neutral}
+            if (n == no_neutral) {corr.df[(s-8),(((e-1)/2)-25)]<-corr.df[(s-8),(((e-1)/2)-25)]/denom}
           } #end else
         } #end for s loop 
       } #end if statement
@@ -183,7 +187,8 @@ for (e in c(54, 56, 58)) {
         } #end m loop
         
         #run correlogram function
-        if (sum(trait_matrix) > 0) {
+        if (sum(trait_matrix) == 0) {
+          denom<-denom-1 } else if {sum(trait_matrix) > 0 {
           
           #run correlog
           trait.mantel<-mantel.correlog(D.eco=trait_matrix, D.geo=distance_matrix, nperm=1000)
@@ -201,10 +206,10 @@ for (e in c(54, 56, 58)) {
             trait.string<-as.numeric(substr(trait.string, 33, 44))
             if (e == 54 || 56 || 58){
               corr.df[(s-8),((e/2)-25)]<-corr.df[(s-8),((e/2)-25)]+trait.string
-              if (n == no_FL) {corr.df[(s-8),(((e)/2)-25)]<-corr.df[(s-8),(((e)/2)-25)]/no_FL}
+              if (n == no_FL) {corr.df[(s-8),(((e)/2)-25)]<-corr.df[(s-8),(((e)/2)-25)]/denom}
             } else {
               corr.df[(s-8),(((e-1)/2)-25)]<-corr.df[(s-8),(((e-1)/2)-25)]+trait.string
-              if (n == no_FL) {corr.df[(s-8),(((e-1)/2)-25)]<-corr.df[(s-8),(((e-1)/2)-25)]/no_FL}
+              if (n == no_FL) {corr.df[(s-8),(((e-1)/2)-25)]<-corr.df[(s-8),(((e-1)/2)-25)]/denom}
             } #end else
           } #end for s loop 
         } #end if statement

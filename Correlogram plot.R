@@ -188,7 +188,7 @@ for (e in c(54, 56, 58)) {
         
         #run correlogram function
         if (sum(trait_matrix) == 0) {
-          denom<-denom-1 } else if {sum(trait_matrix) > 0 {
+          denom<-denom-1 } else if (sum(trait_matrix) > 0) {
           
           #run correlog
           trait.mantel<-mantel.correlog(D.eco=trait_matrix, D.geo=distance_matrix, nperm=1000)

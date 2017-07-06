@@ -42,9 +42,12 @@ var<-sum(NH$ind.var)/(2*pop_size)
 
 #sample offspring
 off.samp<-sample(c(1:pop_size), size=100, replace=FALSE)
+
+#set up density data frames
 off.df<-as.data.frame(matrix(nrow=100,ncol=1))
 ind.df<-as.data.frame(matrix(nrow=1, ncol=1))
 ind.df.t<-as.data.frame(matrix(nrow=1, ncol=1))
+
 #start loop over sampled offspring
 for (w in off.samp){
   a<-NH$X_pos[w]
@@ -53,16 +56,21 @@ for (w in off.samp){
   p.x<-round(sqrt(var))+a #round so can translate to cartesian coordinates
   n.x<-a-round(sqrt(var))
   for (x in n.x:p.x){
+    
     p.y<-round(sqrt(var-(x-a)^2))+b
     n.y<-b-round(sqrt(var-(x-a)^2))
     for (z in n.y:p.y) {
-      NH.temp<-filter(NH, X_pos==x, Y_pos==z)
-      FLday.t<-NH.temp$FLday[1]
-      dif.t<-abs(FLday.o-FLday.t)
-      dif.t<-(15-dif.t)/15
-      ind.df.t[1,1]<-dif.t
-      ind.df<-bind_rows(ind.df, ind.df.t)
+      if ((x >= 1) & (x <= sqrt(pop_size)) & (z >= 1) & (z <= sqrt(pop_size)) {
+        NH.temp<-filter(NH, X_pos==x, Y_pos==z)
+        FLday.t<-NH.temp$FLday[1]
+        dif.t<-abs(FLday.o-FLday.t)
+        dif.t<-(15-dif.t)/15
+        ind.df.t[1,1]<-dif.t
+        ind.df<-bind_rows(ind.df, ind.df.t)
+        }
     } #next y position
   } #next x position
-  off.df[match(c(w),off.samp),]<-sum(ind.df[,1], na.rm=TRUE)/length(ind.df[,1])
+  off.df[match(c(w),off.samp),]<-sum(ind.df[,1], na.rm=TRUE)/length(ind.df[,1], na.rm=TRUE)
 } #next offspring
+          mean(off
+write.csv(off.df, "

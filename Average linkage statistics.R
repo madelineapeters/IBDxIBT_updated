@@ -3,13 +3,13 @@ library(tidyr)
 library(dplyr)
 library(data.table)
 
-for (e in seq(from=54, to=63, by=1)) {
+for (e in seq(from=54, to=65, by=1)) {
   #set parameters
   no_runs<-5
   FLmean<-100
-  no_FL<-10
+  no_neutral<-10
   pop_size<-400
-  no_FL<-10
+  no_FL<-5
   
   for (r in 1:no_runs) {
     #Set the working directory
@@ -32,11 +32,13 @@ for (e in seq(from=54, to=63, by=1)) {
   
   #bind data frames and rename columns
   total.sig<-bind_cols(dflist.sig)
-  for (g in 1:(no_runs*no_FL+no_runs)){
+  #for (g in 1:(2*no_runs)){
+  for (g in 1:((no_runs*2*no_FL)+no_runs)){
     names(total.sig)[g]<-paste(g)
   }
   total.r<-bind_cols(dflist.r)
-  for (g in 1:(no_runs*no_FL+no_runs)){
+  #for (g in 1:(2*no_runs)){
+  for (g in 1:((no_runs*2*no_FL)+no_runs)){
     names(total.r)[g]<-paste(g)
   }
   
@@ -46,13 +48,16 @@ for (e in seq(from=54, to=63, by=1)) {
       total.sig<-select(total.sig, -(1))
       total.r<-select(total.r, -(1))
     } else{
-      total.sig<-select(total.sig, -((r-1)*no_FL+1))
-      total.r<-select(total.r, -((r-1)*no_FL+1))
+      total.sig<-select(total.sig, -((r-1)*2*no_FL+1))
+      #total.sig<-select(total.sig, -((r-1)+1))
+      total.r<-select(total.r, -((r-1)*2*no_FL+1))
+      #total.r<-select(total.r, -((r-1)+1))
     }
   }
   
   #sum over rows to get average statistics
   total.sig<-rowMeans(total.sig, na.rm = TRUE, dims = 1)
+  total.r<-rowMeans(total.r, na.rm = TRUE, dims = 1)
 
   #reset the working directory
   setwd('../')

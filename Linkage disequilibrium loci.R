@@ -43,7 +43,7 @@ foreach (e = seq(from = 54, to = 65, by = 1)) %dopar% {
       
       #loop over population and number of neutral alleles to fill in allele score dataframe
       for (k in 1:pop_size){
-        for (j in 1:no_neutral)
+        for (j in 1:no_ne)
         {
           offspring_map[k,1+(2*(j-1))]<-if (offspring[k,10+(2*5)+(2*(j-1))]=="d") {
             0} else {1}

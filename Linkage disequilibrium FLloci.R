@@ -26,7 +26,6 @@ for (e in seq(from = 54, to = 65, by = 1)) {
     
     #create output dataframe
     LD.df.D<-as.data.frame(matrix(nrow=11, ncol=88))
-    names(LD.df.D)[1:20]<-c("1.2","1.3","1.4","1.5","2.")
     LD.df.r<-as.data.frame(matrix(nrow=11, ncol=88))
     
     #set working directory
@@ -75,7 +74,6 @@ for (e in seq(from = 54, to = 65, by = 1)) {
             
             D<-(p.ab-(p.a*p.b)) #disequilibrium coefficient
             r<-D/sqrt(p.a*(1-p.a)*p.b*(1-p.b)) #correlation coefficient
-            if (is.na(r)) {r <- "N"}
             if (i == 1) {
               LD.df.D[1,(A*(B))]<-D
               LD.df.r[1,(A*(B))]<-r
@@ -89,11 +87,13 @@ for (e in seq(from = 54, to = 65, by = 1)) {
     
     #remove columns with NA
     LD.df.D<-LD.df.D[ , colSums(is.na(LD.df.D)) == 0]
-    names(LD.df.D)<-c("1.2","1.3","1.4","1.5","2.3","2.4","2.5","3.4","3.5","4.5")
     
-    LD.df.r<-LD.df.r[ , colSums(is.na(LD.df.r)) == 0]
-    LD.df.r[is.na(LD.df.r)] <- 0
-    names(LD.df.r)<-c("1.2","1.3","1.4","1.5","2.3","2.4","2.5","3.4","3.5","4.5")
+    x<-1
+    for(c in 2:88) {
+      if (is.na(unique(LD.df.r[,c]))) {x <- c(x,c)}
+    }
+    LD.df.r<-select(LD.df.r, -x)
+    LD.df.r<-abs(LD.df.r)
     
     write.csv(LD.df.D, paste("LD.df.D.", o, ".csv", sep=""))
     write.csv(LD.df.r, paste("LD.df.r.", o, ".csv", sep=""))

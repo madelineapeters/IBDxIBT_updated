@@ -28,14 +28,14 @@ for (e in c(54,56,58)) {
   setwd(start_wd)
     
   #ensure all dataframes are loaded into the environment
-  df.sig<-paste("LD.D.avg.", e, sep="")
+  df.sig<-paste("LD.N.D.avg.", e, sep="")
   assign(df.sig, read.csv("LD.D.avg.csv", header = TRUE))
   
   rm(df.sig)
   
 } #next e
     
-dflist.sig<-lapply(ls(pattern = "LD.D.avg.*"), get)
+dflist.sig<-lapply(ls(pattern = "LD.N.D.avg.*"), get)
 
 LD.D<-bind_cols(dflist.sig)
 names(LD.D)<-c("P55","P57","P59")
@@ -44,9 +44,9 @@ LD.D<-bind_cols(plot.df, LD.D)
 
 library(ggplot2)
 LD.D.plot<-ggplot(data=LD.D, aes(x=gen))+
-  geom_line(aes(y=P55), colour="darkblue", size=2)+
+  geom_line(aes(y=P55), colour="darkgreen", size=2)+
   geom_line(aes(y=P57), colour="yellow", size=2)+
-  geom_line(aes(y=P59), colour="darkgreen", size=2)+
+  geom_line(aes(y=P59), colour="darkblue", size=2)+
   xlab("Generation (0-500)")+ylab("Disequilibrium coefficient")+
   theme_bw()+theme(axis.text.x = element_blank())+ylim(-0.01,0.15)
 plot(LD.D.plot)

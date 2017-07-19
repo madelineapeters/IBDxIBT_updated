@@ -9,6 +9,10 @@ setwd(paste(getwd(), paste("para_set", para_set, sep="_"), paste("model_run", r,
 sum.N<-as.data.frame(matrix(nrow=no_gen,ncol=3))
 names(sum.N)<-c("N.size","var","d")
 
+#create selfing rate dataframe
+self.df<-as.data.frame(matrix(nrow=no_gen, ncol=1))
+names(self.df)<-"self.rate"
+
 #Step 1) Create table to hold parental information
 parents<-as.data.frame(matrix(nrow=pop_size, ncol=(3+(2*FT_loci)+3)))
 
@@ -56,7 +60,7 @@ parents$Y_pos<-sapply(X=parents$position, FUN=function(X) {
 
 ###Run offspring generations(generation 2 through no_gen)###
 for (g in 1:no_gen){
-
+  
   
   #Step 2) Fill in flowering schedule
   #2a) Set days of flowering schedule
@@ -156,7 +160,7 @@ for (g in 1:no_gen){
   #Step 5) Recalibrate mating opportunity matrix to account for space
   mat_opp_adj<-mat_opp * (pollen_dispersal1 + pollen_dispersal2)
   mat_opp_adj<-mat_opp_adj/sum(mat_opp_adj)
-
+  
   #Step 9) Generate offspring
   offspring<-as.data.frame(matrix(nrow=pop_size, ncol=ncol(parents)))
   names(offspring)<-names(parents)
@@ -192,14 +196,14 @@ for (g in 1:no_gen){
     #9b5) Record mom and dad
     offspring$Mother[o]<-mom
     offspring$Father[o]<-dad		
-  
+    
     #9b10) Mendellian inheritance of flowering time loci 
     for (n in 1:(FT_loci)) {
       offspring[o,4 + 2*(n-1)]<-sample(x=parents[mom,(4+2*(n-1)):(5 + 2*(n-1))], size=1)
       offspring[o,5 + 2*(n-1)]<-sample(x=parents[dad,(4+2*(n-1)):(5 + 2*(n-1))], size=1)
     }	#close loop over the flowering time loci
     
-   
+    
   }	#close loop over offspring
   
   #9c) Add environmental variance to flowering time, and sum flwg time columns to calculate flowering time	
@@ -233,6 +237,11 @@ for (g in 1:no_gen){
     NH$P.y[p]<-sapply(X=pos_vector[dad.x], FUN=function(X) {
       as.numeric(strsplit(X, split=",")[[1]][2])
     })
+  }
+  
+  #score selfing
+  for (k in 1:pop_size) {
+    NH$self[k]<-if (NH$Mother[k] == NH$Father[k]) {1} else if (NH$Mother[k] != NH$Father[k]) {0}
   }
   
   #calculate Euclidean distance for each parent
@@ -301,16 +310,20 @@ for (g in 1:no_gen){
   } #next offspring
   
   write.csv(off.df, paste("off.df.", g, ".csv", sep=""))
+  write.csv(NH, paste("NH.", g, ".csv", sep=""))
   
   sum.N[g,1]<-(4*3.14*var*mean(off.df$V1, na.rm=TRUE))
   sum.N[g,2]<-var
   sum.N[g,3]<-mean(off.df$V1, na.rm=TRUE)
   
+  self.df[g,1]<-mean(NH$self)
+  
   write.csv(sum.N,
             "sum.N.csv", row.names=F)
+  write.csv(self.df, 
+            "self.df.csv", row.names=F)
   
   if (g<no_gen){
     offspring->parents}
   
 }
-  

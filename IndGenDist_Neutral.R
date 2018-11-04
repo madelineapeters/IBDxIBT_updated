@@ -7,7 +7,7 @@ library("adegenet")
 library("ade4")
 
 run = 1 #model run
-g.list = c(1,10,20,30,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
+g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
 
 Mantel.obs = as.data.frame(matrix(nrow=length(g.list),ncol=8))
 names(Mantel.obs) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
@@ -18,7 +18,7 @@ names(Mantel.p) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
 ##############################################################
 ## Calculate spatial autocorrelation statistics
 ##############################################################
-for (s in 1:8){
+for (s in 9:16){
   for (g in 1:length(g.list)){
     
     gen = g.list[g]
@@ -101,31 +101,37 @@ for (s in 1:8){
     
     Mantel.obs[g,s] = mantel.out$obs
     Mantel.p[g,s] = mantel.out$pvalue
+    
+    write.csv(Mantel.obs,'Neutral.2D.Mantel.obs.r.csv',row.names=FALSE)
+    write.csv(Mantel.p,'Neutral.2D.Mantel.p.csv',row.names=FALSE)
   }  
 }
+
 
 ##############################################################
 ## Plot spatial autocorrelation statistics
 ##############################################################
-library(ggplot2)
+comment.out = function(){
+  library(ggplot2)
 
-Mantel.obs.plot = gather(Mantel.obs,'paraset','correlation')
-Mantel.obs.plot$generation = g.list
-
-Mantel.p.plot = gather(Mantel.p,'paraset','significance')
-Mantel.p.plot$generation = g.list
-
-Mantel.plot = bind_cols(Mantel.obs.plot,Mantel.p.plot) %>% select(.,paraset,generation,correlation,significance)
-Mantel.plot$grouping[1:72] = 'Selfing'
-Mantel.plot$grouping[73:144] = 'No selfing'
-Mantel.plot[(Mantel.plot == 'paraset_1')|(Mantel.plot == 'paraset_5')] = 'Null'
-Mantel.plot[(Mantel.plot == 'paraset_2')|(Mantel.plot == 'paraset_6')] = 'IBT'
-Mantel.plot[(Mantel.plot == 'paraset_3')|(Mantel.plot == 'paraset_7')] = 'IBD'
-Mantel.plot[(Mantel.plot == 'paraset_4')|(Mantel.plot == 'paraset_8')] = 'IBDxIBT'
-names(Mantel.plot)[1] = 'Isolation'
-
-ggplot()+geom_line(data=Mantel.plot,aes(x=generation,y=correlation,col=Isolation))+
-  geom_point(data=filter(Mantel.plot,significance<0.05),aes(x=generation,y=correlation,col=Isolation),shape=8)+
-  facet_wrap(grouping~.)+
-  xlab('Generation')+ylab('Correlation')+ggtitle('Correlation between spatial distance and genetic distance (number allelic differences between individuals)')+
-  theme_classic()
+  Mantel.obs.plot = gather(Mantel.obs,'paraset','correlation')
+  Mantel.obs.plot$generation = g.list
+  
+  Mantel.p.plot = gather(Mantel.p,'paraset','significance')
+  Mantel.p.plot$generation = g.list
+  
+  Mantel.plot = bind_cols(Mantel.obs.plot,Mantel.p.plot) %>% select(.,paraset,generation,correlation,significance)
+  Mantel.plot$grouping[1:72] = 'Selfing'
+  Mantel.plot$grouping[73:144] = 'No selfing'
+  Mantel.plot[(Mantel.plot == 'paraset_1')|(Mantel.plot == 'paraset_5')] = 'Null'
+  Mantel.plot[(Mantel.plot == 'paraset_2')|(Mantel.plot == 'paraset_6')] = 'IBT'
+  Mantel.plot[(Mantel.plot == 'paraset_3')|(Mantel.plot == 'paraset_7')] = 'IBD'
+  Mantel.plot[(Mantel.plot == 'paraset_4')|(Mantel.plot == 'paraset_8')] = 'IBDxIBT'
+  names(Mantel.plot)[1] = 'Isolation'
+  
+  ggplot()+geom_line(data=Mantel.plot,aes(x=generation,y=correlation,col=Isolation))+
+    geom_point(data=filter(Mantel.plot,significance<0.05),aes(x=generation,y=correlation,col=Isolation),shape=8)+
+    facet_wrap(grouping~.)+
+    xlab('Generation')+ylab('Correlation')+ggtitle('Correlation between spatial distance and genetic distance (number allelic differences between individuals)')+
+    theme_classic()
+}

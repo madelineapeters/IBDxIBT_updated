@@ -3,9 +3,9 @@ library(tibble)
 library(ggplot2)
 library(RColorBrewer)
 
-para_set = 4 #parameter set
+para_set = 12 #parameter set
 run = 1 #model run
-g.list = c(1,10,20,30,49,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
+g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200, 250,300)#,350,400,450,500)
 
 #Frequency plots
 for (g in g.list){

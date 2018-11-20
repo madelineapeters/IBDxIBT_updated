@@ -4,7 +4,11 @@ library(tibble)
 library(ggplot2)
 library(RColorBrewer)
 
+<<<<<<< HEAD
 r.list = 1:4 #model run
+=======
+r.list = c(1,2) #model run
+>>>>>>> origin/master
 g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
 
 Mantel.obs = as.data.frame(matrix(nrow=length(g.list),ncol=8))
@@ -95,6 +99,7 @@ for (r in r.list){
 Var.avg = joint.summary %>% group_by(grouping,Isolation,Generation) %>% summarise(.,avg=mean(var))
 ggplot()+geom_line(data=filter(joint.summary,Run==1),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=filter(joint.summary,Run==2),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
+<<<<<<< HEAD
   geom_line(data=filter(joint.summary,Run==3),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=filter(joint.summary,Run==4),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=Var.avg,aes(x=Generation,y=avg,col=Isolation),size=1)+
@@ -102,3 +107,7 @@ ggplot()+geom_line(data=filter(joint.summary,Run==1),aes(x=Generation,y=var,col=
 
 ggplot()+geom_line(data=filter(joint.summary,Run==3,grouping=='Selfing'),aes(x=Generation,y=var,col=Isolation))+
   theme_classic()+ylab('Variance')+facet_grid(.~grouping)+ggtitle('Variance in allele frequency at neutral loci')
+=======
+  geom_line(data=Var.avg,aes(x=Generation,y=avg,col=Isolation),size=1)+
+  theme_classic()+ylab('Variance')+facet_grid(.~grouping)+ggtitle('Variance in allele frequency at neutral loci')
+>>>>>>> origin/master

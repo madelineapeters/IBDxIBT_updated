@@ -7,7 +7,11 @@ library(tidyr)
 library(plyr)
 
 para_set = 9 #parameter set
+<<<<<<< HEAD
 r.list = 1:4 #model run
+=======
+r.list = c(1,2) #model run
+>>>>>>> origin/master
 g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
 
 Ne.df = as.data.frame(matrix(nrow=length(g.list),ncol=3))
@@ -97,19 +101,29 @@ Ne.avg = Ne.joint %>% group_by(grouping,Gen,Isolation) %>% summarize(.,avg = mea
 Var.avg = Ne.joint %>% group_by(grouping,Gen,Isolation) %>% summarize(.,avg = mean(var))
 ggplot()+geom_line(data=filter(Ne.joint,run==1),aes(x=Gen,y=Ne,col=Isolation),alpha=0.25)+
   geom_line(data=filter(Ne.joint,run==2),aes(x=Gen,y=Ne,col=Isolation),alpha=0.25)+
+<<<<<<< HEAD
   geom_line(data=filter(Ne.joint,run==3),aes(x=Gen,y=Ne,col=Isolation),alpha=0.25)+
   geom_line(data=filter(Ne.joint,run==4),aes(x=Gen,y=Ne,col=Isolation),alpha=0.25)+
+=======
+>>>>>>> origin/master
   geom_line(data=Ne.avg,aes(x=Gen,y=avg,col=Isolation),size=1)+
   theme_classic()+ylab("Effective population size")+xlab("Generation")+facet_grid(.~grouping)+geom_hline(yintercept=2500,linetype='dashed')
 
 ggplot()+geom_line(data=filter(Ne.joint,run==1),aes(x=Gen,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=filter(Ne.joint,run==2),aes(x=Gen,y=var,col=Isolation),alpha=0.25)+
+<<<<<<< HEAD
   geom_line(data=filter(Ne.joint,run==3),aes(x=Gen,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=filter(Ne.joint,run==4),aes(x=Gen,y=var,col=Isolation),alpha=0.25)+
+=======
+>>>>>>> origin/master
   geom_line(data=Var.avg,aes(x=Gen,y=avg,col=Isolation),size=1)+
   theme_classic()+ylab("Variation in offspring per parent")+xlab("Generation")+facet_grid(.~grouping)+geom_hline(yintercept=2,linetype='dashed')
 
 Parent.filtered = filter(Parent.joint,Gen %in% c(1,50,150,500))#,grouping=="Selfing")
+<<<<<<< HEAD
 ggplot(data=filter(Parent.joint,Gen %in% c(1,50,150,500),grouping=="Selfing"),aes(Offspring,fill=Isolation))+geom_histogram(binwidth=0.5)+facet_grid(Gen~Isolation,labeller=labeller(Gen=c(`1`='Gen 1',`50`='Gen 50',`150`='Gen 150',`500`='Gen 500')))+theme_classic()+xlab("Number gametes to next generation per parent")+ylab('Count')
 
                                                                                                                                                      
+=======
+ggplot(data=filter(Parent.joint,Gen %in% c(1,50,150,500),grouping=="Selfing"),aes(Offspring,fill=Isolation))+geom_histogram(binwidth=0.5)+facet_grid(Gen~Isolation)+theme_classic()+xlab("Number gametes to next generation per parent")+ylab('Count')
+>>>>>>> origin/master

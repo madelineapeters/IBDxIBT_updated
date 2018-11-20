@@ -10,7 +10,11 @@ library(rgl)
 
 # Set parameters
 para_set = 12
+<<<<<<< HEAD
 run = 3
+=======
+run = 2
+>>>>>>> origin/master
 g = 500
 
 # Read in data and set up for k-means analysis
@@ -130,7 +134,11 @@ comment.out = function(){
 # Determine the optimal model and number of clusters according to the Bayesian Information Criterion for expectation-maximization, initialized by hierarchical clustering for parameterized Gaussian mixture models
 # Set the modelNames parameter to mclust.options(“emModelNames”) so that it includes only those models for evaluation where the number of observations is greater than the dimensions of the dataset here 402>5. 
 
+<<<<<<< HEAD
 d_clust = Mclust(scaled.matrix, G=1:4, 
+=======
+d_clust = Mclust(scaled.matrix, G=1:9, 
+>>>>>>> origin/master
                   modelNames = mclust.options("emModelNames"))
 
 BIC.plot = plot(d_clust, what = c("BIC"), 
@@ -150,7 +158,11 @@ fviz_cluster(km.res, data = df.scaled, geom = "point",
   ggtitle('Clustering based on neutral variation (k = 2)')+
   geom_point(aes(col=factor(ind.neutral.df$FLday)))
 
+<<<<<<< HEAD
 ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=km.res$cluster))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',d_clust$G,')',sep=""))+scale_fill_gradient(low='red',high='yellow')
+=======
+ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=d_clust$classification))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',d_clust$G,')',sep=""))+scale_fill_gradient(low='red',high='yellow')
+>>>>>>> origin/master
 
 ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=FLday))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Flowering day'))
 

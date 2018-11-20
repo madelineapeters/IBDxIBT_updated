@@ -114,17 +114,28 @@ for (s in 9:16){
 comment.out = function(){
   library(ggplot2)
 
+<<<<<<< HEAD
   Mantel.obs = read.csv(paste(getwd(),'Neutral.2D.Mantel.obs.csv',sep="/"))
   Mantel.obs.plot = gather(Mantel.obs,'paraset','correlation')
   Mantel.obs.plot$generation = g.list
   
   Mantel.p = read.csv(paste(getwd(),'Neutral.2D.Mantel.p.csv',sep="/"))
+=======
+  Mantel.obs.plot = gather(Mantel.obs,'paraset','correlation')
+  Mantel.obs.plot$generation = g.list
+  
+>>>>>>> origin/master
   Mantel.p.plot = gather(Mantel.p,'paraset','significance')
   Mantel.p.plot$generation = g.list
   
   Mantel.plot = bind_cols(Mantel.obs.plot,Mantel.p.plot) %>% select(.,paraset,generation,correlation,significance)
+<<<<<<< HEAD
   Mantel.plot$grouping[1:(nrow(Mantel.plot)/2)] = 'Selfing'
   Mantel.plot$grouping[(1+nrow(Mantel.plot)/2):nrow(Mantel.plot)] = 'No selfing'
+=======
+  Mantel.plot$grouping[1:72] = 'Selfing'
+  Mantel.plot$grouping[73:144] = 'No selfing'
+>>>>>>> origin/master
   Mantel.plot[(Mantel.plot == 'paraset_1')|(Mantel.plot == 'paraset_5')] = 'Null'
   Mantel.plot[(Mantel.plot == 'paraset_2')|(Mantel.plot == 'paraset_6')] = 'IBT'
   Mantel.plot[(Mantel.plot == 'paraset_3')|(Mantel.plot == 'paraset_7')] = 'IBD'

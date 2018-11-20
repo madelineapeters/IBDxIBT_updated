@@ -18,7 +18,11 @@ names(Mantel.p) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
 ##############################################################
 ## Calculate spatial autocorrelation statistics
 ##############################################################
+<<<<<<< HEAD
 for (s in 3:8){
+=======
+for (s in 1:8){
+>>>>>>> origin/master
   for (g in 1:length(g.list)){
     
     gen = g.list[g]
@@ -31,7 +35,11 @@ for (s in 3:8){
     Mydata1 = Mydata %>% select(.,loc1a:loc5b)
     Mydata1[Mydata1 == 1] = 'D'
     Mydata1[Mydata1 == -1] = 'd'
+<<<<<<< HEAD
     locus = Mydata1
+=======
+    locus = Mydata1 %>% select(.,)
+>>>>>>> origin/master
     locus$genotype1 = paste(Mydata1$loc1a,Mydata1$loc1b,sep="")
     locus$genotype2 = paste(Mydata1$loc2a,Mydata1$loc2b,sep="")
     locus$genotype3 = paste(Mydata1$loc3a,Mydata1$loc3b,sep="")
@@ -40,7 +48,11 @@ for (s in 3:8){
     
     #Convert matrix to a  genind object (for the package adegenet). #The genind object can then easily be converted into loci objects (package pegas) (i.e. Mydata2)
     Mydata1 = df2genind(locus, ploidy = 2, sep="")
+<<<<<<< HEAD
     #Mydata2 = genind2loci(Mydata1)
+=======
+    Mydata2 = genind2loci(Mydata1)
+>>>>>>> origin/master
     
     ##############################################################
     ## Individual genetic distance: euclidean distance
@@ -81,13 +93,21 @@ for (s in 3:8){
       } #distance is just the Euclidean distance between two points
     }
     dist.mat = dist(cbind(Mydata$X_pos,Mydata$Y_pos))
+<<<<<<< HEAD
     mantel.out = mantel.rtest(distgenDISS, dist.mat, nrepet = 200)
+=======
+    mantel.out = mantel.rtest(distgenDISS, dist.mat, nrepet = 500)
+>>>>>>> origin/master
     
     Mantel.obs[g,s] = mantel.out$obs
     Mantel.p[g,s] = mantel.out$pvalue
     
     write.csv(Mantel.obs,'FLday.Mantel.obs.csv',row.names=FALSE)
+<<<<<<< HEAD
     write.csv(Mantel.p,'FLday.Mantel.p.csv',row.names=FALSE)
+=======
+    write.csv(Mantel.p,'FLday.Mantel.p.csv.',row.names=FALSE)
+>>>>>>> origin/master
     
   }  
 }
@@ -98,10 +118,16 @@ for (s in 3:8){
 comment.out = function(){
   library(ggplot2)
 
+<<<<<<< HEAD
   Mantel.obs = read.csv(paste(getwd(),'FLday.Mantel.obs.csv',sep="/"))
   Mantel.obs.plot = gather(Mantel.obs,'paraset','correlation')
   Mantel.obs.plot$generation = g.list
   Mantel.p = read.csv(paste(getwd(),'FLday.Mantel.p.csv',sep="/"))
+=======
+  Mantel.obs.plot = gather(Mantel.obs,'paraset','correlation')
+  Mantel.obs.plot$generation = g.list
+  
+>>>>>>> origin/master
   Mantel.p.plot = gather(Mantel.p,'paraset','significance')
   Mantel.p.plot$generation = g.list
   
@@ -117,6 +143,10 @@ comment.out = function(){
   ggplot()+geom_line(data=Mantel.plot,aes(x=generation,y=correlation,col=Isolation))+
     geom_point(data=filter(Mantel.plot,significance<0.05),aes(x=generation,y=correlation,col=Isolation),shape=8)+
     facet_wrap(grouping~.)+
+<<<<<<< HEAD
     xlab('Generation')+ylab('Correlation')+ggtitle('Correlation between spatial distance and mean flowering day')+
+=======
+    xlab('Generation')+ylab('Correlation')+ggtitle('Correlation between spatial distance and genetic distance (number allelic differences between individuals)')+
+>>>>>>> origin/master
     theme_classic()
 }

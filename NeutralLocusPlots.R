@@ -5,7 +5,11 @@ library(RColorBrewer)
 
 para_set = 12 #parameter set
 run = 1 #model run
+<<<<<<< HEAD
 g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200, 250,300,350,400,450,500)
+=======
+g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200, 250,300)#,350,400,450,500)
+>>>>>>> origin/master
 
 #Frequency plots
 for (g in g.list){
@@ -109,6 +113,7 @@ ggplot()+geom_point(data=FLday.mapC,aes(x=FLday,y=`mean(mapC)`))+ylim(0,2)
 
 hist(df$FLday)
 
+<<<<<<< HEAD
 ##########################################
 ## Sorting allele frequencies by cluster
 ##########################################
@@ -204,3 +209,25 @@ avg.joint = avg.diff
 avg.joint = bind_rows(avg.joint,avg.diff)
 
 ggplot()+geom_line(data=avg.joint,aes(x=Generation,y=avg,col=Isolation))+theme_bw()+ylim(0,0.2)+ylab('Difference in neutral freq. between clusters (k forced to 2)')
+=======
+#####Ordinal regression
+require(foreign)
+require(ggplot2)
+require(MASS)
+require(Hmisc)
+require(reshape2)
+
+df$mapA = factor(df$mapA, levels=c("0", "1", "2"), ordered=TRUE)
+df$mapB = factor(df$mapB, levels=c("0", "1", "2"), ordered=TRUE)
+df$mapC = factor(df$mapC, levels=c("0", "1", "2"), ordered=TRUE)
+
+m = polr(mapA ~ FLday + X_pos + Y_pos + X_pos*Y_pos, data = df, Hess=TRUE)
+summary(m)
+ctable = coef(summary(m))
+p = pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+ctable = cbind(ctable, "p value" = p)
+ci = confint(m)
+exp(cbind(OR = coef(m), ci))
+
+mean(as.numeric(offspring_map$mapB))
+>>>>>>> origin/master

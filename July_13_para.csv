@@ -1,9 +1,0 @@
-set,no_runs,no_gen,pop_size,fl_var,fl_noise,m_per_unit,FT_loci,no_S_alleles,allele_prob,stigma_expr,pollen_expr,phenology,compatibility,space_pollen,no_neut_alleles,neutral_prob,freqA,selection_aa,selection_AA,LA_inbreeding_flowers,fl_id_weight,LA_inbreeding_fecundity,EA_inbreeding,EA_id_threshold,space_seed,seed_lambda,space,neut_loci,torus,mut,u
-82,5,100,100,high,low,0.5,5,12,random,codominant,codominant,no,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001
-83,5,100,100,high,low,0.5,5,12,random,codominant,codominant,yes,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001
-84,5,100,100,high,low,1,5,12,random,codominant,codominant,no,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001
-85,5,100,100,high,low,1,5,12,random,codominant,codominant,yes,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001
-86,3,100,400,high,low,0.5,5,12,random,codominant,codominant,no,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001
-87,3,100,400,high,low,0.5,5,12,random,codominant,codominant,yes,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001
-88,3,100,400,high,low,1,5,12,random,codominant,codominant,no,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001
-89,3,100,400,high,low,1,5,12,random,codominant,codominant,yes,no,yes,12,random,0.5,0,0,no,0.5,no,no,0.6,yes,2,fixed,10,yes,no,0.001

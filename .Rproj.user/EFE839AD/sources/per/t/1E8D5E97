@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1541175767289.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "79|25|90|0|\n103|25|124|0|\n",
+    "hash" : "325576526",
+    "id" : "1E8D5E97",
+    "lastKnownWriteTime" : 1541614918,
+    "last_content_update" : 1541614918963,
+    "path" : "~/Desktop/Weis.lab/IBDxIBT/3D_cluster_plotting.R",
+    "project_path" : "3D_cluster_plotting.R",
+    "properties" : {
+        "cursorPosition" : "163,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

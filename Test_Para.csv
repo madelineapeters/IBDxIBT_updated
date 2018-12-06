@@ -15,3 +15,11 @@ set,no_runs,no_gen,pop_size,fl_var,fl_noise,m_per_unit,FT_loci,no_S_alleles,alle
 14,1,500,2500,high,low,1,5,0,random,codominant,codominant,yes,yes,no,25,random,0.5,0,0,no,0.5,no,no,0.6,no,0.5,fixed,25,no,no,0.001,yes
 15,1,500,2500,high,low,1,5,0,random,codominant,codominant,no,yes,yes,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,yes
 16,1,500,2500,high,low,1,5,0,random,codominant,codominant,yes,yes,yes,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,yes
+17,10,800,2500,high,low,1,5,0,random,codominant,codominant,no,no,no,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,no
+18,10,800,2500,high,low,1,5,0,random,codominant,codominant,yes,no,no,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,no
+19,10,800,2500,high,low,1,5,0,random,codominant,codominant,no,no,yes,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,no
+20,10,800,2500,high,low,1,5,0,random,codominant,codominant,yes,no,yes,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,no
+21,10,800,2500,high,low,1,5,0,random,codominant,codominant,no,yes,no,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,yes
+22,10,800,2500,high,low,1,5,0,random,codominant,codominant,yes,yes,no,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,yes
+23,10,800,2500,high,low,1,5,0,random,codominant,codominant,no,yes,yes,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,yes
+24,10,800,2500,high,low,1,5,0,random,codominant,codominant,yes,yes,yes,25,random,0.5,0,0,no,0.5,no,no,0.6,yes,0.5,fixed,25,no,no,0.001,yes

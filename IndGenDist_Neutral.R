@@ -6,28 +6,29 @@ library("ape")
 library("adegenet")
 library("ade4")
 
-run = 1 #model run
-g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
+run = 9 #model run
+g.list = c(1,seq(10,100,10),seq(150,800,50))
+g.short = c(1,seq(100,800,100))
 
-Mantel.obs = as.data.frame(matrix(nrow=length(g.list),ncol=8))
-names(Mantel.obs) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
+Mantel.obs = as.data.frame(matrix(nrow=length(g.short),ncol=8))
+names(Mantel.obs) = sapply(9:16, function(X) paste('paraset',X,sep="_"))
 
-Mantel.p = as.data.frame(matrix(nrow=length(g.list),ncol=8))
-names(Mantel.p) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
+Mantel.p = as.data.frame(matrix(nrow=length(g.short),ncol=8))
+names(Mantel.p) = sapply(9:16, function(X) paste('paraset',X,sep="_"))
 
 ##############################################################
 ## Calculate spatial autocorrelation statistics
 ##############################################################
 for (s in 9:16){
-  for (g in 1:length(g.list)){
+  for (g in 1:length(g.short)){
     
-    gen = g.list[g]
+    gen = g.short[g]
     print(paste('Working on generation',gen,'of parameter set',s,sep=" "))
     
     ##############################################################
     ## Convert the data
     ##############################################################
-    Mydata = read.csv(paste(getwd(),'/para_set_',s,'/model_run_',run,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
+    Mydata = read.csv(paste(getwd(),'/IBDxIBT','/para_set_',s,'/model_run_',run,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
     locus = Mydata %>% select(.,genotypeA,genotypeB,genotypeC)
     locus$genotype1 = paste(Mydata$neut1a,Mydata$neut1b,sep="")
     locus$genotype2 = paste(Mydata$neut2a,Mydata$neut2b,sep="")
@@ -108,7 +109,7 @@ for (s in 9:16){
 }
 
 
-##############################################################
+Ind##############################################################
 ## Plot spatial autocorrelation statistics
 ##############################################################
 comment.out = function(){

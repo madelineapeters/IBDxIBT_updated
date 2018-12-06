@@ -9,12 +9,12 @@ library(mclust)
 library(rgl)
 
 # Set parameters
-para_set = 12
-run = 3
-g = 500
+para_set = 9
+run = 8
+g = 800
 
 # Read in data and set up for k-means analysis
-df = read.csv(paste(getwd(),'/para_set_',para_set,'/model_run_',run,'/paraset_',para_set,'_offspring_map_',g,'.csv',sep=""))
+df = read.csv(paste(getwd(),'/IBDxIBT','/para_set_',para_set,'/model_run_',run,'/paraset_',para_set,'_offspring_map_',g,'.csv',sep=""))
 neutral.df = df %>% select(.,FLday,X_pos,Y_pos,mapA,mapB,mapC,loc1a:loc5b,neut1a:neut24b)
 neutral.df[] = lapply(neutral.df, as.character)
 neutral.df[neutral.df == 'D'] = 1; 
@@ -147,10 +147,10 @@ km.res = kmeans(df.scaled, k.means, iter.max = 20,nstart = 25)
 # Visualize k-means clusters
 fviz_cluster(km.res, data = df.scaled, geom = "point",
              stand = FALSE, ellipse.type = "norm")+theme_classic()+theme(legend.position='none')+
-  ggtitle('Clustering based on neutral variation (k = 2)')+
+  ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',d_clust$G,')',sep=""))+
   geom_point(aes(col=factor(ind.neutral.df$FLday)))
 
-ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=km.res$cluster))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',d_clust$G,')',sep=""))+scale_fill_gradient(low='red',high='yellow')
+ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=km.res$cluster))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',d_clust$G,')',sep=""))+scale_fill_gradient(low='white',high='red')
 
 ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=FLday))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Flowering day'))
 

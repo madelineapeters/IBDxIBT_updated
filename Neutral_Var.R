@@ -4,22 +4,30 @@ library(tibble)
 library(ggplot2)
 library(RColorBrewer)
 
-r.list = 1:4 #model run
+r.list = c(1:6,8:10) #model run
 g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
 
-Mantel.obs = as.data.frame(matrix(nrow=length(g.list),ncol=8))
-names(Mantel.obs) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
 
 ##############################################################
 ## Calculate spatial autocorrelation statistics
 ##############################################################
 for (r in r.list){
   for (s in 9:16){
+    
+    if (r<8|r==10){
+      g.list = c(1,seq(10,100,10),seq(150,500,50))
+    } else {
+      g.list = c(1,seq(10,100,10),seq(150,800,50))
+    }
+    
+    Mantel.obs = as.data.frame(matrix(nrow=length(g.list),ncol=8))
+    names(Mantel.obs) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
+    
     for (g in 1:length(g.list)){
       
       gen = g.list[g]
       
-      df = read.csv(paste(getwd(),'/para_set_',s,'/model_run_',r,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
+      df = read.csv(paste(getwd(),'/IBDxIBT','/para_set_',s,'/model_run_',r,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
       neutral.df = df %>% select(.,FLday,X_pos,Y_pos,mapA,mapB,mapC,neut1a:neut24b)
       neutral.df[] = lapply(neutral.df, as.character)
       neutral.df[neutral.df == 'D'] = 1; 
@@ -93,10 +101,22 @@ for (r in r.list){
 }
 
 Var.avg = joint.summary %>% group_by(grouping,Isolation,Generation) %>% summarise(.,avg=mean(var))
+Var.sd = joint.summary %>% group_by(grouping,Isolation,Generation) %>% summarize(.,SD = sd(var))
+Var.plot = bind_cols(Var.avg,as.data.frame(Var.sd$SD))
+names(Var.plot)[5] = 'SD'
+
+ggplot(data=Var.plot,aes(x=Generation))+
+  geom_ribbon(aes(ymin=avg-SD,ymax=avg+SD,fill=Isolation),alpha=0.2)+
+  geom_line(aes(y=avg,col=Isolation),size=1)+
+  theme_classic()+ylab('Variance')+facet_grid(.~grouping)+ggtitle('Variance in allele frequency at neutral loci')
+
 ggplot()+geom_line(data=filter(joint.summary,Run==1),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=filter(joint.summary,Run==2),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=filter(joint.summary,Run==3),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=filter(joint.summary,Run==4),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
+  geom_line(data=filter(joint.summary,Run==5),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
+  geom_line(data=filter(joint.summary,Run==6),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
+  geom_line(data=filter(joint.summary,Run==8),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
   geom_line(data=Var.avg,aes(x=Generation,y=avg,col=Isolation),size=1)+
   theme_classic()+ylab('Variance')+facet_grid(.~grouping)+ggtitle('Variance in allele frequency at neutral loci')
 

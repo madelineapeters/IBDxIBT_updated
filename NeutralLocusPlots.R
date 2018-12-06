@@ -113,11 +113,11 @@ hist(df$FLday)
 ## Sorting allele frequencies by cluster
 ##########################################
 para_set = 12 #parameter set
-run = 4 #model run
-g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200, 250,300,350,400,450,500)
+run = 8 #model run
+g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200, 250,300,350,400,450,500,550,600,650,700,750,800)
 
 for (g in g.list){
-  df = read.csv(paste(getwd(),'/para_set_',para_set,'/model_run_',run,'/paraset_',para_set,'_offspring_map_',g,'.csv',sep=""))
+  df = read.csv(paste(getwd(),'/IBDxIBT','/para_set_',para_set,'/model_run_',run,'/paraset_',para_set,'_offspring_map_',g,'.csv',sep=""))
   neutral.df = df %>% select(.,FLday,X_pos,Y_pos,mapA,mapB,mapC,neut1a:neut24b)
   neutral.df[] = lapply(neutral.df, as.character)
   neutral.df[neutral.df == 'D'] = 1; 

@@ -1,33 +1,28 @@
+detach("package:tidyr")
 library(plyr)
 library(dplyr)
 library(tibble)
 library(ggplot2)
 library(RColorBrewer)
 
-r.list = c(1:6,8:10) #model run
-g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500)
+r.list = c(1:3) #model run
+g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800)
 
 
 ##############################################################
 ## Calculate spatial autocorrelation statistics
 ##############################################################
 for (r in r.list){
-  for (s in 9:16){
-    
-    if (r<8|r==10){
-      g.list = c(1,seq(10,100,10),seq(150,500,50))
-    } else {
-      g.list = c(1,seq(10,100,10),seq(150,800,50))
-    }
+  for (s in 17:24){
     
     Mantel.obs = as.data.frame(matrix(nrow=length(g.list),ncol=8))
-    names(Mantel.obs) = sapply(1:8, function(X) paste('paraset',X,sep="_"))
+    names(Mantel.obs) = sapply(17:24, function(X) paste('paraset',X,sep="_"))
     
     for (g in 1:length(g.list)){
       
       gen = g.list[g]
       
-      df = read.csv(paste(getwd(),'/IBDxIBT','/para_set_',s,'/model_run_',r,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
+      df = read.csv(paste(getwd(),'/para_set_',s,'/model_run_',r,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
       neutral.df = df %>% select(.,FLday,X_pos,Y_pos,mapA,mapB,mapC,neut1a:neut24b)
       neutral.df[] = lapply(neutral.df, as.character)
       neutral.df[neutral.df == 'D'] = 1; 
@@ -78,7 +73,7 @@ for (r in r.list){
       
     }
     
-    if (s == 9){
+    if (s == 17){
       var.final = map.df
       var.final$paraset = s
     } else {
@@ -88,12 +83,12 @@ for (r in r.list){
       var.final = bind_rows(var.final,var.temp)
     }
   }
-  var.final$grouping[1:(nrow(var.final)/2)] = 'Selfing'
+  var.final$grouping = 'Selfing'
   var.final$grouping[(1+nrow(var.final)/2):nrow(var.final)] = 'No selfing'
-  var.final$paraset[(var.final$paraset == 9)|(var.final$paraset == 13)] = 'Null'
-  var.final$paraset[(var.final$paraset == 10)|(var.final$paraset == 14)] = 'IBT'
-  var.final$paraset[(var.final$paraset == 11)|(var.final$paraset == 15)] = 'IBD'
-  var.final$paraset[(var.final$paraset == 12)|(var.final$paraset == 16)] = 'IBDxIBT'
+  var.final$paraset[(var.final$paraset == 17)|(var.final$paraset == 21)] = 'Random'
+  var.final$paraset[(var.final$paraset == 18)|(var.final$paraset == 22)] = 'IBT'
+  var.final$paraset[(var.final$paraset == 19)|(var.final$paraset == 23)] = 'IBD'
+  var.final$paraset[(var.final$paraset == 20)|(var.final$paraset == 24)] = 'IBDxIBT'
   names(var.final)[4] = 'Isolation'
   summary.df = var.final %>% group_by(.,Generation,grouping,Isolation) %>% summarise(var=var(Frequency))
   summary.df$Run = r
@@ -110,15 +105,8 @@ ggplot(data=Var.plot,aes(x=Generation))+
   geom_line(aes(y=avg,col=Isolation),size=1)+
   theme_classic()+ylab('Variance')+facet_grid(.~grouping)+ggtitle('Variance in allele frequency at neutral loci')
 
-ggplot()+geom_line(data=filter(joint.summary,Run==1),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
-  geom_line(data=filter(joint.summary,Run==2),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
-  geom_line(data=filter(joint.summary,Run==3),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
-  geom_line(data=filter(joint.summary,Run==4),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
-  geom_line(data=filter(joint.summary,Run==5),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
-  geom_line(data=filter(joint.summary,Run==6),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
-  geom_line(data=filter(joint.summary,Run==8),aes(x=Generation,y=var,col=Isolation),alpha=0.25)+
+ggplot()+geom_line(data=filter(joint.summary,Run==1),aes(x=Generation,y=var,col=Isolation),alpha=0.5)+geom_line(data=filter(joint.summary,Run==2),aes(x=Generation,y=var,col=Isolation),alpha=0.5)+
+  geom_line(data=filter(joint.summary,Run==3),aes(x=Generation,y=var,col=Isolation),alpha=0.5)+
   geom_line(data=Var.avg,aes(x=Generation,y=avg,col=Isolation),size=1)+
   theme_classic()+ylab('Variance')+facet_grid(.~grouping)+ggtitle('Variance in allele frequency at neutral loci')
 
-ggplot()+geom_line(data=filter(joint.summary,Run==3,grouping=='Selfing'),aes(x=Generation,y=var,col=Isolation))+
-  theme_classic()+ylab('Variance')+facet_grid(.~grouping)+ggtitle('Variance in allele frequency at neutral loci')

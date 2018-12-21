@@ -9,12 +9,12 @@ library(mclust)
 library(rgl)
 
 # Set parameters
-para_set = 9
-run = 8
+para_set = 20
+run = 1
 g = 800
 
 # Read in data and set up for k-means analysis
-df = read.csv(paste(getwd(),'/IBDxIBT','/para_set_',para_set,'/model_run_',run,'/paraset_',para_set,'_offspring_map_',g,'.csv',sep=""))
+df = read.csv(paste(getwd(),'/para_set_',para_set,'/model_run_',run,'/paraset_',para_set,'_offspring_map_',g,'.csv',sep=""))
 neutral.df = df %>% select(.,FLday,X_pos,Y_pos,mapA,mapB,mapC,loc1a:loc5b,neut1a:neut24b)
 neutral.df[] = lapply(neutral.df, as.character)
 neutral.df[neutral.df == 'D'] = 1; 
@@ -140,19 +140,21 @@ title(main = "Spatial clustering of flowering time")
 mtext(paste("BIC, generation", g, sep=" "))
 
 ############ K-means clustering ###############
-k.means = d_clust$G
+k.means = 2#d_clust$G
 
 km.res = kmeans(df.scaled, k.means, iter.max = 20,nstart = 25)
 
 # Visualize k-means clusters
 fviz_cluster(km.res, data = df.scaled, geom = "point",
              stand = FALSE, ellipse.type = "norm")+theme_classic()+theme(legend.position='none')+
-  ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',d_clust$G,')',sep=""))+
+  ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',k.means,')',sep=""))+
   geom_point(aes(col=factor(ind.neutral.df$FLday)))
 
 ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=km.res$cluster))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Neutral genetic clusters in two-dimensional space (k = ',d_clust$G,')',sep=""))+scale_fill_gradient(low='white',high='red')
 
 ggplot()+geom_tile(data=df,aes(x=X_pos,y=Y_pos,fill=FLday))+theme_classic()+theme(legend.position='none')+xlab('X position')+ylab('Y position')+ggtitle(paste('Flowering day'))
+
+ggplot()+geom_point(data=df,aes(x=FLday,y=km.res$cluster))+theme_classic()
 
 # Spinning 3d Scatterplot
 library(rgl)
@@ -161,3 +163,7 @@ cols = rainbow(n=7)[c]
 plot3d(ind.neutral.df$X_pos, ind.neutral.df$Y_pos, ind.neutral.df$FLday, col=cols, size=3,
        xlab='',ylab='',zlab='')
 
+hist.df = df %>% bind_cols(.,as.data.frame(km.res$cluster))
+names(hist.df)[ncol(hist.df)] = 'Cluster'
+
+ggplot(data=hist.df,aes(FLday)) + geom_histogram(aes(fill=factor(km.res$cluster)),position='dodge')+guides(fill=guide_legend(title="Neutral cluster"))+theme_classic()+ylab('Count')

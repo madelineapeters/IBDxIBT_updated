@@ -6,20 +6,19 @@ library("ape")
 library("adegenet")
 library("ade4")
 
-run = 9 #model run
-g.list = c(1,seq(10,100,10),seq(150,800,50))
+run = 1 #model run
 g.short = c(1,seq(100,800,100))
 
 Mantel.obs = as.data.frame(matrix(nrow=length(g.short),ncol=8))
-names(Mantel.obs) = sapply(9:16, function(X) paste('paraset',X,sep="_"))
+names(Mantel.obs) = sapply(17:24, function(X) paste('paraset',X,sep="_"))
 
 Mantel.p = as.data.frame(matrix(nrow=length(g.short),ncol=8))
-names(Mantel.p) = sapply(9:16, function(X) paste('paraset',X,sep="_"))
+names(Mantel.p) = sapply(17:24, function(X) paste('paraset',X,sep="_"))
 
 ##############################################################
 ## Calculate spatial autocorrelation statistics
 ##############################################################
-for (s in 9:16){
+for (s in 17:24){
   for (g in 1:length(g.short)){
     
     gen = g.short[g]
@@ -28,7 +27,7 @@ for (s in 9:16){
     ##############################################################
     ## Convert the data
     ##############################################################
-    Mydata = read.csv(paste(getwd(),'/IBDxIBT','/para_set_',s,'/model_run_',run,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
+    Mydata = read.csv(paste(getwd(),'/para_set_',s,'/model_run_',run,'/paraset_',s,'_offspring_map_',gen,'.csv',sep=""))
     locus = Mydata %>% select(.,genotypeA,genotypeB,genotypeC)
     locus$genotype1 = paste(Mydata$neut1a,Mydata$neut1b,sep="")
     locus$genotype2 = paste(Mydata$neut2a,Mydata$neut2b,sep="")
@@ -100,8 +99,8 @@ for (s in 9:16){
     dist.mat = dist(cbind(Mydata$X_pos,Mydata$Y_pos))
     mantel.out = mantel.rtest(distgenDISS, dist.mat, nrepet = 500)
     
-    Mantel.obs[g,s] = mantel.out$obs
-    Mantel.p[g,s] = mantel.out$pvalue
+    Mantel.obs[g,s-16] = mantel.out$obs
+    Mantel.p[g,s-16] = mantel.out$pvalue
     
     write.csv(Mantel.obs,'Neutral.2D.Mantel.obs.r.csv',row.names=FALSE)
     write.csv(Mantel.p,'Neutral.2D.Mantel.p.csv',row.names=FALSE)
@@ -109,7 +108,7 @@ for (s in 9:16){
 }
 
 
-Ind##############################################################
+##############################################################
 ## Plot spatial autocorrelation statistics
 ##############################################################
 comment.out = function(){

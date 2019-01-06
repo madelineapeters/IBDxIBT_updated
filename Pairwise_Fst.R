@@ -3,7 +3,7 @@ library(tibble)
 library(ggplot2)
 library(RColorBrewer)
 
-r.list = c(1:2) #model run
+r.list = c(1:3) #model run
 g.list = c(1,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800)
 
 ##############################################################
@@ -137,3 +137,10 @@ names(Pairwise.Fst)[4] = 'Isolation'
 ggplot()+geom_line(data=Pairwise.Fst,aes(x=Distance,y=Fst,col=Isolation))+facet_grid(grouping~.)
 ggplot()+geom_smooth(data=filter(Pairwise.Fst,Run==1),aes(x=Distance,y=Fst,color=Isolation))+facet_grid(grouping~.)
 ggplot()+geom_smooth(data=filter(Pairwise.Fst,Run==2),aes(x=Distance,y=Fst,color=Isolation))+facet_grid(grouping~.)
+
+table(unlist(ind.neutral.df$map1))[1]
+p = (table(unlist(ind.neutral.df$map2))[1]+0.5*table(unlist(ind.neutral.df$map2))[2])/nrow(ind.neutral.df)
+q = 1-p
+
+H.e = 2*p*q
+H.o = table(unlist(ind.neutral.df$map2))[2]/nrow(ind.neutral.df)
